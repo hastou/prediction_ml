@@ -35,14 +35,14 @@ filtered_inputs = inputs[inputs["Visiteurs presents"] > 0]
 # print(X)
 # print(separate_learn_and_test_data(X))
 
-def show_data(plot, test_X, test_y, title="", x_label="", y_label="", color="red"):
+def show_data(plot, test_X, test_y, title="", x_label="", y_label="", color="red", nbins=15):
     # plt.figure()
     plt.subplot(plot)
     plt.scatter(test_X, test_y)
     plt.title(title)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
-    # plt.locator_params(numticks=15)
+    plt.locator_params(axis="y", tight=False, nbins=nbins)
     # plt.show()
 
 
