@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ml_affluences.iml" filepath="$PROJECT_DIR$/.idea/ml_affluences.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/prediction_ml.iml" filepath="$PROJECT_DIR$/.idea/prediction_ml.iml" />
     </modules>
   </component>
 </project>
