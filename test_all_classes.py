@@ -2,12 +2,43 @@ from prediction.base_class import DataClass
 from prediction.test_classes import classes_to_test
 from sklearn.metrics import r2_score
 import json
+import copy
 
 
-data_path = "data/biblio_3_per_half_hour.csv"
-data = DataClass(file_path=data_path)
-x_train, y_train, x_test, y_test = data.separated_data
-x_size = data.x_parameters_size
+# data_path = "data/biblio_3_per_half_hour.csv"
+# data = DataClass(file_path=data_path)
+# x_train, y_train, x_test, y_test = data.separated_data
+# x_size = data.x_parameters_size
+
+
+def test_file(path_file, filename=None, path_json="results.json", **kwargs):
+    if filename is None:
+        filename = path_file
+    data = DataClass(file_path=path_file, **kwargs)
+    x_train, y_train, x_test, y_test = data.separated_data
+    x_size = data.x_parameters_size
+
+    _results = {}
+    for test_class in classes_to_test:
+        out = calculate_score(test_class)
+    _results[out[0]] = out[1]
+    results = {filename: _results}
+    # write_results(results)
+    old_results = read_old(path_json)
+    r = merge_results(old_results, results)
+    write_new_results(r, path_json)
+
+
+def best_results(all_results):
+    best_of_all = ()
+    bests = ()
+    for key in all_results:
+        results = all_results[key]
+        m = -1000
+        for k in results:
+
+
+    return best_of_all, bests
 
 
 def calculate_r2_adjusted_score(r2, n, p):
@@ -26,7 +57,7 @@ def calculate_r2_adjusted_score(r2, n, p):
     )
 
 
-def calculate_score(_test_class):
+def calculate_score(_test_class, x_train, y_train, x_test, y_test, x_size):
     t = _test_class[0]
     t.fit(x_train, y_train)
     y_pred = t.predict(x_test)
@@ -46,7 +77,44 @@ def print_score(_results):
         print(r, ":", _results[r])
 
 
+def read_old(path):
+    content = ""
+    with open(path, "r", encoding="utf-8") as file:
+        content = file.read()
+    j = {}
+    try:
+        j = json.loads(content)
+    except:
+        pass
+    return j
+
+
+def write_new_results(_results, path):
+    with open(path, "w", encoding="utf-8") as file:
+        j = json.dumps(_results, indent=4)
+        file.write(j)
+
+
+def merge_results(old_results, new_results):
+    out = copy.copy(old_results)
+    for key in new_results:
+        if key not in out:
+            out[key] = new_results[key]
+        else:
+            out[key] = merge_results_same_file(out[key], new_results[key])
+    return out
+
+
+def merge_results_same_file(old_results, new_results):
+    for key in new_results:
+        old_results[key] = new_results[key]
+    return old_results
+
+
 def write_results(_results, path="results.json"):
+    """
+    Deprecated
+    """
     with open(path, "r+", encoding="UTF-8") as file:
         old_content = file.read()
         to_write = {}
@@ -61,15 +129,15 @@ def write_results(_results, path="results.json"):
         j = json.dumps(to_write, indent=4)
         file.write(j)
 
-
-results = {}
-for test_class in classes_to_test:
-    out = calculate_score(test_class)
-    results[out[0]] = out[1]
-
-print_score(results)
-write_results(results)
-
+#
+# results = {}
+# for test_class in classes_to_test:
+#     out = calculate_score(test_class)
+#     results[out[0]] = out[1]
+#
+# print_score(results)
+# write_results(results)
+#
 
 
 
