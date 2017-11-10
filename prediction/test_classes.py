@@ -1,16 +1,25 @@
-from .base_class import BaseClass
-from sklearn.linear_model import LinearRegression
+from sklearn import linear_model
+from prediction.prediction_classes import PolynomialClass
 
 
-class LinearRegression(BaseClass):
-
-    regressor = LinearRegression()
-
-    def fit(self, x_train, y_train):
-        self.regressor.fit(x_train, y_train)
-
-    def predict(self, x_test):
-        return self.regressor.predict(x_test)
+def add_range(_class, name, begin=0, end=10):
+    for i in range(begin, end):
+        to_append = (
+            _class(i),
+            "{} {}".format(name, i)
+        )
+        classes_to_test.append(to_append)
 
 
-# todo: add classes here
+classes_to_test = [
+    # todo: add classes here
+    (
+        linear_model.LinearRegression(),
+        "Regression Linéaire",
+    ),
+
+]
+
+
+add_range(PolynomialClass, "Polynomial", 2)
+

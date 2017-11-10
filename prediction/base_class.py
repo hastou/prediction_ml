@@ -1,51 +1,50 @@
 import pandas as pd
 
 
-implement_this = "Please implement this method"
-
-
-class BaseClass:
-
-    base_class = True
-
-    def fit(self, x_train, y_train):
-        raise NotImplementedError(implement_this)
-
-    def predict(self, x_test):
-        raise NotImplementedError(implement_this)
-
-
 class DataClass:
 
-    file_path = ""
-    csv_sep = ";"
+    values = {
+        "file_path": "data.csv",
+        "csv_sep": ";",
+        "year_to_separate": 2016,
+        "x_parameters": ("weekday", "hours"),
+        "y_parameters": ("Visiteurs presents"),
+        "field_with_minimal_value": "Visiteurs presents",
+        "minimum_value": 0,
 
-    def __init__(self, file_path="data.csv", sep=";"):
-        self.file_path = file_path
-        self.csv_sep = sep
+    }
 
-    def get_filtered_data(self):
-        inputs = pd.read_csv(self.file_path, sep=self.csv_sep)
+    def __init__(self, **kwargs):
+        for k in self.values.keys():
+            if k in kwargs:
+                self.values[k] = kwargs[k]
+        pass
+
+    @property
+    def filtered_data(self):
+        inputs = pd.read_csv(self.values["file_path"], sep=self.values["csv_sep"])
         inputs['Date'] = pd.to_datetime(inputs['Date'], format='%d/%m/%Y %H:%M')
         inputs['weekday'] = inputs['Date'].map(lambda x: x.weekday())
         inputs["hours"] = inputs["Date"].dt.strftime("%H%M")
-        filtered_inputs = inputs[inputs["Visiteurs presents"] > 0]
+        filtered_inputs = inputs[inputs[self.values["field_with_minimal_value"]] > self.values["minimum_value"]]
         return filtered_inputs
 
-    @staticmethod
-    def _get_x_y(inputs):
-        x = inputs.loc[:, ["weekday", "hours"]]
-        y = inputs.loc[:, ["Visiteurs presents"]]
+    def _get_x_y(self, inputs):
+        x = inputs.loc[:, self.values["x_parameters"]]
+        y = inputs.loc[:, self.values["y_parameters"]]
         return x, y
 
-    def get_separated_data(self):
+    @property
+    def separated_data(self):
         filtered_data = self.filtered_data
-        verif_set = filtered_data[filtered_data["Date"].dt.year > 2016]
-        trainning_set = filtered_data[filtered_data["Date"].dt.year <= 2016]
-        (test_X, test_y) = self._get_x_y(verif_set)
-        (training_X, training_y) = self._get_x_y(trainning_set)
+        year = self.values["year_to_separate"]
+        test_set = filtered_data[filtered_data["Date"].dt.year > year]
+        training_set = filtered_data[filtered_data["Date"].dt.year <= year]
+        (test_X, test_y) = self._get_x_y(test_set)
+        (training_X, training_y) = self._get_x_y(training_set)
         return training_X, training_y, test_X, test_y
 
-    filtered_data = property(get_filtered_data)
-    separated_data = property(get_separated_data)
-
+    @property
+    def x_parameters_size(self):
+        x_parameters = self.values["x_parameters"]
+        return len(x_parameters)
