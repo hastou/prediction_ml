@@ -1,6 +1,6 @@
 from prediction.base_class import DataClass
 from prediction.test_classes import classes_to_test
-from sklearn.metrics import r2_score
+from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 import json
 import copy
 
@@ -29,16 +29,16 @@ def test_file(path_file, filename=None, path_json="results.json", **kwargs):
     write_new_results(r, path_json)
 
 
-def best_results(all_results):
-    best_of_all = ()
-    bests = ()
-    for key in all_results:
-        results = all_results[key]
-        m = -1000
-        for k in results:
-
-
-    return best_of_all, bests
+# def best_results(all_results):
+#     best_of_all = ()
+#     bests = ()
+#     for key in all_results:
+#         results = all_results[key]
+#         m = -1000
+#         for k in results:
+#
+#
+#     return best_of_all, bests
 
 
 def calculate_r2_adjusted_score(r2, n, p):
