@@ -26,7 +26,7 @@ def interpolate_na(data_frame, col_x, cols_y):
         model.fit(X_train, y_train)
         y_pred = model.predict(X_pred)
 
-        tranform into series before concat
+        #todo: tranform into series before concat
         X = pd.concat([X_train, y_train], axis=1)
         y = pd.concat([X_pred, y_pred], axis=1)
 
