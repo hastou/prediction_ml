@@ -2,6 +2,9 @@ from sklearn import linear_model
 from prediction.prediction_classes import PolynomialRegression
 from prediction.score import calculate_r2_adjusted_score, r2_score
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.svm import SVR
+
+
 
 def generate_range_of_polynomial_model(_class, name, begin=0, end=10):
     polynomial_models = []
@@ -24,6 +27,10 @@ classes_to_test = [(
         RandomForestRegressor(n_estimators=100, criterion="mae", min_samples_split=2, random_state=1),
         "Random Forest : estimators:100, criterion=mae, min_samples_split=2, random_state=1"
     ),
+    (
+        SVR(),
+        "SVR",
+    ),
 ]
 
 
@@ -36,7 +43,8 @@ def test_models(library_name, xy_train_test, models=classes_to_test):
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
         r2 = r2_score(y_test, y_pred)
-        r_adj = calculate_r2_adjusted_score(r2, len(y_test.ix[:, 0]), len(X_test))
+        n, p = X_test.shape
+        r_adj = calculate_r2_adjusted_score(r2, n, p)
 
         results += [{
             "score": r2,
