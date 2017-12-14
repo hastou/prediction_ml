@@ -1,6 +1,8 @@
 import pandas as pd
-
-from sklearn.linear_model import LinearRegression
+from pandas import Series
+from sklearn.linear_model import LinearRegression, Lasso
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
 
 
 def interpolate_na(data_frame, col_x, cols_y):
@@ -22,13 +24,13 @@ def interpolate_na(data_frame, col_x, cols_y):
         y_train = y[y_not_na].values.reshape(-1, 1)
         X_pred = X[y.isna()].values.reshape(-1, 1)
 
-        model = LinearRegression()
+        model = make_pipeline(PolynomialFeatures(4), Lasso())
         model.fit(X_train, y_train)
         y_pred = model.predict(X_pred)
 
-        #todo: tranform into series before concat
-        X = pd.concat([X_train, y_train], axis=1)
-        y = pd.concat([X_pred, y_pred], axis=1)
+        # todo: transform into series before concat
+        X = pd.concat([Series(X_train[:, 0]), Series(y_train[:, 0])], axis=1)
+        y = pd.concat([Series(X_pred[:, 0]), Series(y_pred[:, 0])], axis=1)
 
         # y = pd.concat([y_train, y_pred])
         # y.sort_index(inplace=True)  # Sort to have all values in the same order in the resulting DataFrame

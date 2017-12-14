@@ -26,16 +26,16 @@ def get_all_files():
     # holidays["ts"] = holidays["Date"].values.astype(np.int64) // 10 ** 9
 
     # Get weather
-    weather_all = pd.read_csv("data/meteo_paris.zip", sep=";", decimal=",", na_values="mq")
-    weather_cols = ["t", "rr1", "rr3", "rr6", "rr12", "rr24"]
-    weather = weather_all.loc[:, ["formattedDate"] + weather_cols]
-    weather.rename(index=str, columns={"formattedDate": "Date"}, inplace=True)
-    # weather.replace("mq", np.nan, inplace=True)
-    weather["Date"] = pd.to_datetime(weather["Date"], infer_datetime_format=True)
-    # "//" not a comment but a integer division
-    weather["ts"] = weather["Date"].values.astype(np.int64) // 10 ** 9
-
-    weather = interpolate_na(weather, "ts", weather_cols)
+    # weather_all = pd.read_csv("data/meteo_paris.zip", sep=";", decimal=",", na_values="mq")
+    # weather_cols = ["t", "rr24", "tn24", "t", "tx24", "tend24", "tw", "u", "ff", ]
+    # weather = weather_all.loc[:, ["formattedDate"] + weather_cols]
+    # weather.rename(index=str, columns={"formattedDate": "Date"}, inplace=True)
+    # # weather.replace(np.nan, 0, inplace=True)
+    # weather["Date"] = pd.to_datetime(weather["Date"], infer_datetime_format=True)
+    # # "//" not a comment but a integer division
+    # weather["ts"] = weather["Date"].values.astype(np.int64) // 10 ** 9
+    #
+    # weather = interpolate_na(weather, "ts", weather_cols)
 
     return df
 
