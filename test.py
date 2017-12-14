@@ -10,6 +10,16 @@ from utils.data import interpolate_na
 path = "data/per_half_hour"
 
 
+def get_holidays():
+    holidays_all = pd.read_csv("data/holidays.csv", encoding="latin_1", sep=";", decimal=",")
+    holidays = holidays_all.loc[:, ["Date", "Vacances C", "Férié"]]
+    holidays["Date"] = pd.to_datetime(holidays["Date"], infer_datetime_format=True)
+    holidays["dayOfWeek"] = holidays["Date"].dt.dayofweek
+
+    for i in range(48):
+        pass
+
+
 def get_all_files():
     files = glob(path + "/*.csv")
     csvs = []
@@ -23,6 +33,7 @@ def get_all_files():
     holidays_all = pd.read_csv("data/holidays.csv", encoding="latin_1", sep=";", decimal=",")
     holidays = holidays_all.loc[:, ["Date", "Vacances C", "Férié"]]
     holidays["Date"] = pd.to_datetime(holidays["Date"], infer_datetime_format=True)
+    holidays["dayOfWeek"] = holidays["Date"].dt.dayofweek
     # holidays["ts"] = holidays["Date"].values.astype(np.int64) // 10 ** 9
 
     # Get weather

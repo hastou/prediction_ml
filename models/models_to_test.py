@@ -24,5 +24,5 @@ classes_to_test = [
 ]
 
 
-classes_to_test.append(* generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2))
+classes_to_test.append(* generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2, 5))
 
