@@ -2,7 +2,7 @@ from sklearn import linear_model
 from sklearn.preprocessing import PolynomialFeatures
 
 
-class PolynomialClass(linear_model.LinearRegression):
+class PolynomialRegression(linear_model.LinearRegression):
 
     polynomial = None
 
