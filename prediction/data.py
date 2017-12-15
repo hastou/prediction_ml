@@ -32,17 +32,22 @@ def get_data(
 
     to_drop = ["date", "library"] + columns_to_drop
     request = "SELECT * from data_library d where Date(strftime('%Y', d.Date))"
-    train = pd.read_sql_query(
-        "{} < Date('{}');".format(request, year_to_separate),
-        conn,
-        index_col="id",
-    )
+    # request = "SELECT * from data_library d where Date(strftime('%Y', d.Date))"
+    # train = pd.read_sql_query(
+    #     "{} < Date('{}');".format(request, year_to_separate),
+    #     conn,
+    #     index_col="id",
+    # )
+    data = pd.read_sql_query("select * from data_library", conn, index_col="id")
+    data["date"] = pd.to_datetime(data["date"])
+    train = data[data["date"].dt.year < year_to_separate]
+    test = data[data["date"].dt.year >= year_to_separate]
     train.drop(to_drop, axis=1, inplace=True)
-    test = pd.read_sql_query(
-        "{} >= Date('{}');".format(request, year_to_separate),
-        conn,
-        index_col="id",
-    )
+    # test = pd.read_sql_query(
+    #     "{} >= Date('{}');".format(request, year_to_separate),
+    #     conn,
+    #     index_col="id",
+    # )
     test.drop(to_drop, axis=1, inplace=True)
     conn.close()
 

@@ -23,15 +23,22 @@ classes_to_test = [
         linear_model.LinearRegression(),
         "Regression Linéaire",
     ),
-    *generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2, 6),
-    (
-        RandomForestRegressor(n_estimators=100, criterion="mae", min_samples_split=2, random_state=1),
-        "Random Forest : estimators:100, criterion=mae, min_samples_split=2, random_state=1"
-    ),
-    (
-        SVR(),
-        "SVR",
-    ),
+    *generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2, 9),
+
+    # Les deux classes suivantes peuvent être bien des fois, donc ça vaut le coup de tester
+
+    # /!\ This class add 330s of test /!\
+    # Tu peux tenter de réduire grandement le nombre d'estimateurs
+    # (
+    #     RandomForestRegressor(n_estimators=100, criterion="mae", min_samples_split=2, random_state=1),
+    #     "Random Forest : estimators:100, criterion=mae, min_samples_split=2, random_state=1"
+    # ),
+
+    # /!\ This class add 230s of test /!\
+    # (
+    #     SVR(),
+    #     "SVR",
+    # ),
 ]
 
 

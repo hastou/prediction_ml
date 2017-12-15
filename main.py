@@ -1,6 +1,6 @@
 from prediction.data import get_data
 from prediction.test_classes import test_models
-
+import time
 
 
 if __name__ == "__main__":
@@ -13,10 +13,12 @@ if __name__ == "__main__":
         # "Férié",
     ]
     # cols = []
-    print("Begin")
+    begin = time.time()
     data_lib_1 = get_data(establishment_number=1, columns_to_drop=cols)
-    print("Data loaded")
+    mid = time.time()
+    print("Data loaded :", mid - begin)
     results = test_models("library_1", data_lib_1)
+    print("End :", time.time() - mid)
     # print(results)
 
     for r in results:
