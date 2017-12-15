@@ -3,7 +3,8 @@ from prediction.prediction_classes import PolynomialRegression
 from prediction.score import calculate_r2_adjusted_score, r2_score
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import SVR
-
+import pandas as pd
+import numpy as np
 
 
 def generate_range_of_polynomial_model(_class, name, begin=0, end=10):
@@ -54,12 +55,16 @@ def test_models(library_name, xy_train_test, models=classes_to_test):
         n, p = X_test.shape
         r_adj = calculate_r2_adjusted_score(r2, n, p)
 
+        out = np.concatenate([X_test, y_test, y_pred], axis=1)
+        # out = pd.concat([pd.DataFrame(X_test), pd.DataFrame(y_test), pd.DataFrame(y_pred)], axis=1)
+        df = pd.DataFrame(out, columns=[* list(X_test), * list(y_test), "pred"])
         results += [{
             "score": r2,
             "score_adjusted": r_adj,
             "parameters": list(X_test),
             "library_name": library_name,
             "model_name": name,
+            "data": df,
         }]
 
     return results
