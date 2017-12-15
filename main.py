@@ -13,7 +13,9 @@ if __name__ == "__main__":
         # "Férié",
     ]
     # cols = []
+    print("Begin")
     data_lib_1 = get_data(establishment_number=1, columns_to_drop=cols)
+    print("Data loaded")
     results = test_models("library_1", data_lib_1)
     # print(results)
 

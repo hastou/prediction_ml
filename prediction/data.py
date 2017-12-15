@@ -1,6 +1,5 @@
 import pandas as pd
 import sqlite3
-from sklearn.preprocessing import normalize
 
 
 def get_request():
@@ -12,7 +11,6 @@ def get_data(
         columns_to_drop=[],
         year_to_separate=2017,
         database_name="all.db",
-        normalize_data=False,
 ):
     """
     Get the data to train and test DataFrame from sqlite database
@@ -20,7 +18,6 @@ def get_data(
     :param columns_to_drop: optional columns to drop when getting data
     :param database_name: name of the sqlite file to use as database
     :param year_to_separate: year to separate train and test, the year is part of test
-    :param normalize_data: Normalize or not data
     :return: X_train, y_train, X_test, y_test
     """
     conn = sqlite3.connect(database_name)
@@ -57,11 +54,5 @@ def get_data(
 
     X_test = test.drop(visitors, axis=1)
     y_test = test[[visitors]]
-
-    # Normalize data
-    if normalize_data:
-        axis = 0
-        X_train = normalize(X_train, axis=axis)
-        X_test = normalize(X_test, axis=axis)
 
     return X_train, y_train, X_test, y_test

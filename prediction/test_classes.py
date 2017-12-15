@@ -23,11 +23,7 @@ classes_to_test = [
         linear_model.LinearRegression(),
         "Regression Linéaire",
     ),
-    # *generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2, 6),
-    (
-        PolynomialRegression(3),
-        "Polynomial 3",
-    ),
+    *generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2, 6),
     (
         RandomForestRegressor(n_estimators=100, criterion="mae", min_samples_split=2, random_state=1),
         "Random Forest : estimators:100, criterion=mae, min_samples_split=2, random_state=1"
