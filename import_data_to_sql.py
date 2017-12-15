@@ -32,10 +32,11 @@ cursor.execute("""
           strftime('%s', l.Date) as date_timestamp,
           strftime('%w', l.Date) as day_of_week,
           strftime('%j', l.Date) as day_of_year,
+          strftime('%H%M', l.Date) as hour,
           Vacances_A, Vacances_B, Vacances_C,
           Férié, "Visiteurs presents" as visitors
     FROM libraries l JOIN holidays h ON DATE(h.Date) = DATE(l.Date)
-    WHERE "Visiteurs presents" > 0
+    WHERE visitors >= 0
   ;
 """)
 conn.commit()

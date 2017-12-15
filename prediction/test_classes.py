@@ -18,11 +18,16 @@ def generate_range_of_polynomial_model(_class, name, begin=0, end=10):
     return polynomial_models
 
 
-classes_to_test = [(
+classes_to_test = [
+    (
         linear_model.LinearRegression(),
         "Regression Linéaire",
     ),
-    *generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2, 5),
+    # *generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2, 6),
+    (
+        PolynomialRegression(3),
+        "Polynomial 3",
+    ),
     (
         RandomForestRegressor(n_estimators=100, criterion="mae", min_samples_split=2, random_state=1),
         "Random Forest : estimators:100, criterion=mae, min_samples_split=2, random_state=1"

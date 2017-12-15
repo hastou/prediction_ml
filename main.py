@@ -4,9 +4,25 @@ from prediction.test_classes import test_models
 
 
 if __name__ == "__main__":
-    data_lib_1 = get_data(library_number=1)
+    cols = [
+        "date_timestamp",
+        # "day_of_year",
+        "Vacances_A",
+        "Vacances_B",
+        "Vacances_C",
+        # "Férié",
+    ]
+    # cols = []
+    data_lib_1 = get_data(establishment_number=1, columns_to_drop=cols)
     results = test_models("library_1", data_lib_1)
-    print(results)
+    # print(results)
+
+    for r in results:
+        print("{} : {} / {}".format(
+            r["model_name"],
+            r["score"],
+            r["score_adjusted"],
+        ))
 
 
 
