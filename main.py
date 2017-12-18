@@ -1,3 +1,4 @@
+import numpy as np
 from prediction.data import get_data, normalize_columns
 from sklearn.preprocessing import normalize
 from prediction.test_classes import test_models
@@ -29,17 +30,22 @@ def main():
 
     mid = time.time()
     print("Data loaded :", mid - begin)
-    results = test_models("library_1", data_lib_1)
+    results = test_models("library_1", data_lib_1, print_results=True)
     print("End :", time.time() - mid)
 
     for r in results:
-        print("{} : {} / {}".format(
+        print("{} : {} / {} ||| mean error : {} | mean : {} / {}".format(
             r["model_name"],
-            r["score"],
-            r["score_adjusted"],
-        ))
+            round_float(r["score"]),
+            round_float(r["score_adjusted"]),
+            round_float(r["mean_error"]),
 
+            round_float(r["mean_pred"]),
+            round_float(r["mean"]),
+        ))
         # data.to_csv("test.csv", sep=";", decimal=",")
+
+
 
 
 
