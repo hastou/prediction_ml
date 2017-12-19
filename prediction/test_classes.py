@@ -37,10 +37,10 @@ classes_to_test = [
 
     # /!\ This class add 330s of test /!\
     # Tu peux tenter de réduire grandement le nombre d'estimateurs
-    # (
-    #     RandomForestRegressor(n_estimators=100, criterion="mae", min_samples_split=2, random_state=1),
-    #     "Random Forest : estimators:100, criterion=mae, min_samples_split=2, random_state=1"
-    # ),
+    (
+        RandomForestRegressor(n_estimators=100, min_samples_split=2, random_state=1),
+        "Random Forest"
+    ),
 
     # /!\ This class add 230s of test /!\
     # (
@@ -57,12 +57,12 @@ def test_models(library_name, xy_train_test, models=classes_to_test, print_resul
 
     for model, name in models:
         model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
+        y_pred = model.predict(X_test).reshape(-1, 1)
         r2 = r2_score(y_test, y_pred)
         n, p = X_test.shape
         r_adj = calculate_r2_adjusted_score(r2, n, p)
 
-        out = np.concatenate([X_test, y_test, y_pred], axis=1)
+        out = np.concatenate([X_test, y_test, y_pred.reshape(-1, 1)], axis=1)
         # out = pd.concat([pd.DataFrame(X_test), pd.DataFrame(y_test), pd.DataFrame(y_pred)], axis=1)
         df = pd.DataFrame(out, columns=[* list(X_test), * list(y_test), "pred"])
 
@@ -88,7 +88,7 @@ def test_models(library_name, xy_train_test, models=classes_to_test, print_resul
                 round(m_e, 3),
 
                 round(mean_pred, 3),
-                round("mean", 3),
+                round(mean, 3),
             ))
 
     return results
