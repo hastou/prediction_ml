@@ -7,7 +7,6 @@ import pandas as pd
 import numpy as np
 
 
-
 def mean_error(y_true, y_pred):
     absolutes = np.abs(y_true - y_pred)
     return absolutes.mean(axis=0).mean()
@@ -43,10 +42,10 @@ classes_to_test = [
     ),
 
     # /!\ This class add 230s of test /!\
-    (
-        SVR(),
-        "SVR",
-    ),
+    # (
+    #     SVR(),
+    #     "SVR",
+    # ),
 ]
 
 

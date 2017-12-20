@@ -3,6 +3,7 @@ from prediction.data import get_data, normalize_columns
 from sklearn.preprocessing import normalize
 from prediction.test_classes import test_models
 import time
+from warnings import filterwarnings
 
 
 def normalize_tuple(data):
@@ -14,42 +15,54 @@ def normalize_tuple(data):
     return X_train_norm, y_train_norm, X_test_norm, y_test_norm
 
 
+def remove_cols(ll, to_drop):
+    def d(data):
+        if len(list(data)) < 2:
+            return data
+        return data.drop(to_drop, axis=1)
+    return [d(l) for l in ll]
+
+
 def main():
-    cols = [
-        "date_timestamp",
-        # "day_of_year",
-        "Vacances_A",
-        "Vacances_B",
-        # "Vacances_C",
-        # "Férié",
-        "library",
-    ]
-    begin = time.time()
-    data_lib_1 = get_data(columns_to_drop=cols, threshold_visitors=1, drop_na=True)
-    # data_lib_1 = normalize_tuple(data_lib_1)
 
-    mid = time.time()
-    print("Data loaded :", mid - begin)
-    results = test_models("library_1", data_lib_1, print_results=True)
-    print("End :", time.time() - mid)
+    for lib in range(3):
+        print("===== Lib : " + str(lib) + " ======")
+        cols = [
+            "date_timestamp",
+            # "day_of_year",
+            "Vacances_A",
+            "Vacances_B",
+            # "Vacances_C",
+            # "Férié",
+            "library",
+        ]
+        data = get_data(
+            columns_to_drop=cols,
+            threshold_visitors=1, drop_na=True,
+            establishment_number=lib
+        )
 
-    # for r in results:
-    #     print("{} : {} / {} ||| mean error : {} | mean : {} / {}".format(
-    #         r["model_name"],
-    #         round_float(r["score"]),
-    #         round_float(r["score_adjusted"]),
-    #         round_float(r["mean_error"]),
-    #
-    #         round_float(r["mean_pred"]),
-    #         round_float(r["mean"]),
-    #     ))
-    #     # data.to_csv("test.csv", sep=";", decimal=",")
+        cols_without_weather = [
+            'rainfall',
+            'temperature',
+            'humidity',
+            'pressure',
+            'pressure_variation',
+            'pressure_variation_3h',
+        ]
 
+        l = len(cols_without_weather)
+        for i in range(l):
+            cols_d = cols_without_weather[i:]
+            d = remove_cols(data, cols_d)
+            test_models("lib " + str(i), d, print_results=True)
+            break
 
 
 
 
 if __name__ == "__main__":
+    filterwarnings("ignore")
     main()
 
 

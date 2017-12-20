@@ -6,7 +6,7 @@ import os
 path_data = "data/per_half_hour"
 files = os.listdir(path_data)
 csvs = []
-files = [files[0]]
+# files = [files[0]]
 for idx, file in enumerate(files):
     lib = pd.read_csv(path_data + "/" + file, sep=";", decimal=",")
     lib["library"] = idx
