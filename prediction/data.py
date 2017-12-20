@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import sqlite3
 
 
 def get_data(
@@ -9,6 +8,7 @@ def get_data(
         year_to_separate=2017,
         path_to_file="data/data_all.gz",
         threshold_visitors=None,
+        drop_na=False,
 ):
     """
     Get the data to train and test DataFrame from sqlite database
@@ -19,8 +19,12 @@ def get_data(
     :param year_to_separate: year to separate train and test, the year is part of test
     :return: X_train, y_train, X_test, y_test
     """
+    date_col = "Date"
     data = pd.read_csv(path_to_file, sep=";", decimal=",", index_col="id")
-    data["date"] = pd.to_datetime(data["date"])
+    data[date_col] = pd.to_datetime(data[date_col])
+
+    if drop_na:
+        data.dropna(inplace=True)
 
     # Remove columns below threshold
     if threshold_visitors is not None:
@@ -30,11 +34,11 @@ def get_data(
         data = data[data["library"] == establishment_number]
 
     # Separate data in train and test DataFrame
-    train = data[data.loc[:, "date"].dt.year < year_to_separate]
-    test = data[data.loc[:, "date"].dt.year >= year_to_separate]
+    train = data[data.loc[:, date_col].dt.year < year_to_separate]
+    test = data[data.loc[:, date_col].dt.year >= year_to_separate]
 
     # Drop columns
-    to_drop = ["date"] + columns_to_drop
+    to_drop = [date_col, "Date:1"] + columns_to_drop
     train.drop(to_drop, axis=1, inplace=True)
     test.drop(to_drop, axis=1, inplace=True)
 

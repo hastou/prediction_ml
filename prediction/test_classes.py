@@ -27,11 +27,11 @@ def generate_range_of_polynomial_model(_class, name, begin=0, end=10):
 
 
 classes_to_test = [
-    (
-        linear_model.LinearRegression(normalize=True),
-        "Regression Linéaire",
-    ),
-    *generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2, 9),
+    # (
+    #     linear_model.LinearRegression(normalize=True),
+    #     "Regression Linéaire",
+    # ),
+    # *generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2, 9),
 
     # Les deux classes suivantes peuvent être bien des fois, donc ça vaut le coup de tester
 
@@ -43,10 +43,10 @@ classes_to_test = [
     ),
 
     # /!\ This class add 230s of test /!\
-    # (
-    #     SVR(),
-    #     "SVR",
-    # ),
+    (
+        SVR(),
+        "SVR",
+    ),
 ]
 
 
@@ -56,7 +56,7 @@ def test_models(library_name, xy_train_test, models=classes_to_test, print_resul
     results = []
 
     for model, name in models:
-        model.fit(X_train, y_train)
+        model.fit(X_train, y_train.iloc[:, 0])
         y_pred = model.predict(X_test).reshape(-1, 1)
         r2 = r2_score(y_test, y_pred)
         n, p = X_test.shape

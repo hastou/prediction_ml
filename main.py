@@ -25,7 +25,7 @@ def main():
         "library",
     ]
     begin = time.time()
-    data_lib_1 = get_data(establishment_number=1, columns_to_drop=cols, threshold_visitors=1)
+    data_lib_1 = get_data(columns_to_drop=cols, threshold_visitors=1, drop_na=True)
     # data_lib_1 = normalize_tuple(data_lib_1)
 
     mid = time.time()
