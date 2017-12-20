@@ -2,14 +2,10 @@ from sklearn import linear_model
 from prediction.prediction_classes import PolynomialRegression
 from prediction.score import calculate_r2_adjusted_score, r2_score
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics.regression import mean_absolute_error
 from sklearn.svm import SVR
 import pandas as pd
 import numpy as np
-
-
-def mean_error(y_true, y_pred):
-    absolutes = np.abs(y_true - y_pred)
-    return absolutes.mean(axis=0).mean()
 
 
 
@@ -40,6 +36,10 @@ classes_to_test = [
         RandomForestRegressor(n_estimators=100, min_samples_split=2, random_state=1),
         "Random Forest"
     ),
+    # (
+    #     RandomForestRegressor(n_estimators=100, random_state=1),
+    #     "Random Forest"
+    # ),
 
     # /!\ This class add 230s of test /!\
     # (
@@ -61,11 +61,11 @@ def test_models(library_name, xy_train_test, models=classes_to_test, print_resul
         n, p = X_test.shape
         r_adj = calculate_r2_adjusted_score(r2, n, p)
 
-        out = np.concatenate([X_test, y_test, y_pred.reshape(-1, 1)], axis=1)
+        out = np.concatenate([X_test, y_test, y_pred], axis=1)
         # out = pd.concat([pd.DataFrame(X_test), pd.DataFrame(y_test), pd.DataFrame(y_pred)], axis=1)
         df = pd.DataFrame(out, columns=[* list(X_test), * list(y_test), "pred"])
 
-        m_e = mean_error(y_test, y_pred)
+        m_e = mean_absolute_error(y_test, y_pred)
         mean = y_test.mean(axis=0).mean()
         mean_pred = y_pred.mean(axis=0).mean()
 

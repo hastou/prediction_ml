@@ -38,7 +38,7 @@ def main():
         ]
         data = get_data(
             columns_to_drop=cols,
-            threshold_visitors=1, drop_na=True,
+            threshold_visitors=0, drop_na=True,
             establishment_number=lib
         )
 
@@ -51,8 +51,8 @@ def main():
             'pressure_variation_3h',
         ]
 
-        l = len(cols_without_weather)
-        for i in range(l):
+        length = len(cols_without_weather)
+        for i in range(length):
             cols_d = cols_without_weather[i:]
             d = remove_cols(data, cols_d)
             test_models("lib " + str(i), d, print_results=True)

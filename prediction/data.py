@@ -12,6 +12,7 @@ def get_data(
 ):
     """
     Get the data to train and test DataFrame from sqlite database
+    :param drop_na: drop nan values
     :param threshold_visitors: if None, do nothing, if not, remove all values below this threshold
     :param path_to_file: path to the file to use
     :param establishment_number: id of the establishment in the database
