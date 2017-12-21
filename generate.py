@@ -64,5 +64,5 @@ def main(establishment_number=0, out="results.csv"):
 if __name__ == "__main__":
     for i in range(3):
         main(i, out="results_" + str(i) + ".csv")
-        
+
 

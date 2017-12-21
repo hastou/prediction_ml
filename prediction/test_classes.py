@@ -1,11 +1,15 @@
+import pandas as pd
+import numpy as np
+
 from sklearn import linear_model
-from prediction.prediction_classes import PolynomialRegression
-from prediction.score import calculate_r2_adjusted_score, r2_score
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics.regression import mean_absolute_error
 from sklearn.svm import SVR
-import pandas as pd
-import numpy as np
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.neighbors import KNeighborsRegressor
+
+from prediction.prediction_classes import PolynomialRegression
+from prediction.score import calculate_r2_adjusted_score, r2_score
 
 
 
@@ -22,12 +26,20 @@ def generate_range_of_polynomial_model(_class, name, begin=0, end=10):
 
 
 classes_to_test = [
-    # (
-    #     linear_model.LinearRegression(normalize=True),
-    #     "Regression Linéaire",
-    # ),
-    # *generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2, 9),
-
+    (
+        linear_model.LinearRegression(normalize=True),
+        "Regression Linéaire",
+    ),
+    *generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 2, 5),
+    *generate_range_of_polynomial_model(PolynomialRegression, "Polynomial", 8, 10),
+    (
+        GradientBoostingRegressor(),
+        "Gradient Boosting",
+    ),
+    (
+        KNeighborsRegressor(),
+        "KNeighbors Regressor"
+    ),
     # Les deux classes suivantes peuvent être bien des fois, donc ça vaut le coup de tester
 
     # /!\ This class add 330s of test /!\
