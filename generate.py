@@ -8,7 +8,7 @@ from prediction.data import get_data
 
 
 
-def main(establishment_number=0):
+def main(establishment_number=0, out="results.csv"):
 
     # Get data
     cols_to_drop = [
@@ -27,14 +27,14 @@ def main(establishment_number=0):
     ]
 
     data = get_data(
-        columns_to_drop=cols_to_drop + cols_weather,
-        threshold_visitors=0, drop_na=True,
-        establishment_number=establishment_number
+        columns_to_drop=cols_to_drop + cols_weather, drop_na=True,
+        establishment_number=establishment_number,
+        drop_value_below_threshold=None,
     )
     X_train, y_train, X_test, y_test = data
 
     # Train model and predict
-    model = RandomForestRegressor(n_estimators=500, min_samples_split=2, random_state=1)
+    model = RandomForestRegressor(n_estimators=500, min_samples_split=3, max_features="sqrt", random_state=1)
     y_train_array = y_train.iloc[:, 0]
     model.fit(X_train, y_train_array)
     y_pred = model.predict(X_test).reshape(-1, 1)
@@ -43,7 +43,7 @@ def main(establishment_number=0):
     # Write results
     total = np.concatenate([X_test, y_test, y_pred], axis=1)
     df = pd.DataFrame(total, columns=[*list(X_test), "Real visitor number", "Predicted visitor number"])
-    df.to_csv("data/results.csv", sep=";", decimal=",")
+    df.to_csv("data/" + out, sep=";", decimal=",")
 
     # Show scores
     r2 = r2_score(y_test, y_pred)
@@ -62,5 +62,7 @@ def main(establishment_number=0):
 
 
 if __name__ == "__main__":
-    main(2)
+    for i in range(3):
+        main(i, out="results_" + str(i) + ".csv")
+        
 

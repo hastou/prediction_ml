@@ -1,9 +1,14 @@
 import numpy as np
-from prediction.data import get_data, normalize_columns
-from sklearn.preprocessing import normalize
-from prediction.test_classes import test_models
-import time
 from warnings import filterwarnings
+
+from sklearn.preprocessing import normalize
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics.regression import r2_score, mean_absolute_error
+
+from prediction.data import get_data, normalize_columns
+from prediction.test_classes import test_models
+
 
 
 def normalize_tuple(data):
@@ -23,7 +28,33 @@ def remove_cols(ll, to_drop):
     return [d(l) for l in ll]
 
 
-def main():
+def get_data_without_cols(lib=0):
+    cols = [
+        "date_timestamp",
+        # "day_of_year",
+        "Vacances_A",
+        "Vacances_B",
+        # "Vacances_C",
+        # "Férié",
+        "library",
+    ]
+    cols_without_weather = [
+        'rainfall',
+        'temperature',
+        'humidity',
+        'pressure',
+        'pressure_variation',
+        'pressure_variation_3h',
+    ]
+    data = get_data(
+        columns_to_drop=cols + cols_without_weather, drop_na=True,
+        establishment_number=lib,
+        drop_value_below_threshold=None,
+    )
+    return data
+
+
+def main_test_with_weather():
 
     for lib in range(3):
         print("===== Lib : " + str(lib) + " ======")
@@ -37,9 +68,9 @@ def main():
             "library",
         ]
         data = get_data(
-            columns_to_drop=cols,
-            threshold_visitors=0, drop_na=True,
-            establishment_number=lib
+            columns_to_drop=cols, drop_na=True,
+            establishment_number=lib,
+            drop_value_below_threshold=None,
         )
 
         cols_without_weather = [
@@ -59,10 +90,65 @@ def main():
             break
 
 
+def main_grid_search():
+    data = get_data_without_cols(2)
+    X_train, y_train, X_test, y_test = data
+    # test_models("Library 2", data, print_results=True)
+    parameters = {
+        # "criterion": ("mse", "mae"),
+        # "max_features": ("auto", "sqrt", "log2"),
+        # "max_depth": list(range(5, 16)),
+        # "min_samples_split": list(range(2, 6)),
+        # "min_samples_leaf": list(range(1, 5)),
+        # "min_weight_fraction_leaf": np.arange(0, 0.5, 0.1),
+        # "min_impurity_decrease": list(range(0, 4)),
+    }
+    model = RandomForestRegressor(
+        n_estimators=10, n_jobs=-1, random_state=1,
+
+        criterion="mse", max_features="sqrt",
+        min_samples_split=3, max_depth=9,
+        min_samples_leaf=1,
+        min_weight_fraction_leaf=0,
+        min_impurity_decrease=0,
+    )
+    clf = GridSearchCV(model, parameters, n_jobs=-1)
+    clf.fit(X_train, y_train.iloc[:, 0])
+    results = clf.cv_results_
+    best_params = clf.best_params_
+    print()
+
+
+def main():
+    data = get_data_without_cols(2)
+    X_train, y_train, X_test, y_test = data
+    model = RandomForestRegressor(
+        n_estimators=100, n_jobs=-1, random_state=1,
+
+        criterion="mse", max_features="sqrt",
+        # min_samples_split=3, max_depth=9,
+        # min_samples_leaf=1,
+        # min_weight_fraction_leaf=0,
+        # min_impurity_decrease=0,
+    )
+    model.fit(X_train, y_train.iloc[:, 0])
+    y_pred = model.predict(X_test).reshape(-1, 1)
+
+    r2 = r2_score(y_test, y_pred)
+    m_e = mean_absolute_error(y_test, y_pred)
+    mean = y_test.mean(axis=0).mean()
+    mean_pred = y_pred.mean(axis=0).mean()
+
+    print("{} | mean error : {} | mean {} / {}".format(
+        round(r2, 3),
+        round(m_e, 3),
+        round(mean_pred, 3),
+        round(mean, 3),
+    ))
 
 
 if __name__ == "__main__":
     filterwarnings("ignore")
-    main()
+    main_test_with_weather()
 
 

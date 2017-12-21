@@ -33,7 +33,10 @@ classes_to_test = [
     # /!\ This class add 330s of test /!\
     # Tu peux tenter de réduire grandement le nombre d'estimateurs
     (
-        RandomForestRegressor(n_estimators=100, min_samples_split=2, random_state=1),
+        RandomForestRegressor(
+            n_estimators=500, min_samples_split=3, random_state=1,
+            criterion="mse", max_features="sqrt",
+        ),
         "Random Forest"
     ),
     # (
