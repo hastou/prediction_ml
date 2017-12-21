@@ -67,12 +67,6 @@ def main_test_with_weather():
             # "Férié",
             "library",
         ]
-        data = get_data(
-            columns_to_drop=cols, drop_na=True,
-            establishment_number=lib,
-            drop_value_below_threshold=None,
-        )
-
         cols_without_weather = [
             'rainfall',
             'temperature',
@@ -81,13 +75,18 @@ def main_test_with_weather():
             'pressure_variation',
             'pressure_variation_3h',
         ]
-
-        length = len(cols_without_weather)
-        for i in range(length):
-            cols_d = cols_without_weather[i:]
-            d = remove_cols(data, cols_d)
-            test_models("lib " + str(i), d, print_results=True)
-            break
+        data = get_data(
+            columns_to_drop=cols + cols_without_weather, drop_na=True,
+            establishment_number=lib,
+            drop_value_below_threshold=None,
+        )
+        test_models("Lib : " + str(lib), data, print_results=True)
+        # length = len(cols_without_weather)
+        # for i in range(length):
+        #     cols_d = cols_without_weather[i:]
+        #     d = remove_cols(data, cols_d)
+        #     test_models("lib " + str(i), d, print_results=True)
+        #     break
 
 
 def main_grid_search():
